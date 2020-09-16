@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA,cAGE,SAAU,CACV,UAAW,CACX,QAAS,CACT,cAAe,CACf,YAAa,CACb,uBACF","file":"main.e111478f.chunk.css","sourcesContent":["html,\nbody,\ndiv {\n  margin: 20;\n  padding: 20;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline;\n}\n"]}
