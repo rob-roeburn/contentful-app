@@ -23,10 +23,10 @@ const Entry = (props: EditorProps) => {
   } else {
     props.sdk.space.getEntry(props.sdk.entry.getSys().id)
     .then((entryRef: any) => {
-      console.log(turndownService.turndown(entryRef.fields.Body.en));
-    });
+      entryRef.fields.Body.en = turndownService.turndown(value);
+      props.sdk.space.updateEntry(entryRef);
+    })
   }
-
   return <div>
       <Paragraph>
         <ReactQuill id='quillmain' modules={modules} formats={formats} theme="snow" value={value} onChange={setValue}/>
