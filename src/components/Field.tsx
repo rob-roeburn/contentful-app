@@ -21,6 +21,7 @@ const modules = {
 const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image'];
 const converter = new Showdown.Converter();
 const turndownService = new TurndownService();
+converter.setOption('simpleLineBreaks', true);
 
 interface FieldProps { sdk: FieldExtensionSDK; }
 
