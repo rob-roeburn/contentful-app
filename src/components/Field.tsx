@@ -51,7 +51,7 @@ const Field = (props: FieldProps) => {
     }
   })
 
-  props.sdk.window.updateHeight(650);
+  props.sdk.window.startAutoResizer();
 
   return <div>
       <Paragraph>
