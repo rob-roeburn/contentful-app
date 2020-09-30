@@ -6,19 +6,8 @@ import Showdown from 'showdown';
 import TurndownService from 'turndown';
 import 'react-quill/dist/quill.snow.css';
 
-const modules = {
-  toolbar: [
-    [
-      { 'header': [1, 2, false] }
-    ],
-    ['bold', 'italic'],
-    [
-      {'list': 'ordered'},
-      {'list': 'bullet'}
-    ],
-    ['link'],
-  ]
-};
+
+
 const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image'];
 const converter = new Showdown.Converter();
 const turndownService = new TurndownService();
@@ -52,6 +41,35 @@ const Field = (props: FieldProps) => {
   })
 
   props.sdk.window.startAutoResizer();
+
+  const modules = {
+    toolbar: {
+      container: [
+        [
+          { 'header': [1, 2, false] }
+        ],
+        ['bold', 'italic'],
+        [
+          {'list': 'ordered'},
+          {'list': 'bullet'}
+        ],
+        ['link'],
+        ['image']
+      ],
+      handlers: {
+        'image': function () {
+          let valueHTML=value;
+          props.sdk.dialogs.selectMultipleAssets()
+          .then( (promiseData: any) => {
+            promiseData.forEach((result: any) => {
+              valueHTML+="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">";
+            });
+            setValue(valueHTML);
+          });
+        }
+      }
+    }
+  };
 
   return <div>
       <Paragraph>
