@@ -4,7 +4,11 @@ body,
     margin-block-start: 1em !important;
     margin-block-end: 1em !important;
     margin-inline-start: 0px !important;
-    margin-inline-end: 0px !important;
+    margin-inline-end: 0px !important;}
+.ql-editor img {
+    max-width: 40% !important;
+    margin: 0 auto !important;
+    display: block !important;
 }
 .ql-container {
   font-size: 16px !important;

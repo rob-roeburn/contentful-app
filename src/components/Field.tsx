@@ -9,9 +9,21 @@ import 'react-quill/dist/quill.snow.css';
 
 
 const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image'];
+
+Showdown.extension("noLineBreakLists", function() {
+  return [
+    {
+        type    : 'html',
+        regex   : '</p>\n<ul>',
+        replace : '</p><p><ul>'
+    }
+  ]
+});
+
 const converter = new Showdown.Converter();
-const turndownService = new TurndownService();
+converter.useExtension("noLineBreakLists");
 converter.setOption('simpleLineBreaks', true);
+const turndownService = new TurndownService();
 let mdLoad = true;
 
 interface FieldProps { sdk: FieldExtensionSDK; }
@@ -23,7 +35,7 @@ const Field = (props: FieldProps) => {
     if (value==='') {                         // Initial load of CMS - update quill
       props.sdk.space.getEntry(props.sdk.entry.getSys().id)
       .then((entryRef: any) => {
-      setValue(converter.makeHtml(entryRef.fields.Body.en));
+        setValue(converter.makeHtml(entryRef.fields.Body.en));
       });
     } else {                                  // Component updated
       let debouncetimer = setTimeout(() => {  // Initiate debounce timer
