@@ -12,6 +12,7 @@ const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote',
 const converter = new Showdown.Converter();
 const turndownService = new TurndownService();
 converter.setOption('simpleLineBreaks', true);
+let mdLoad = true;
 
 interface FieldProps { sdk: FieldExtensionSDK; }
 
@@ -27,11 +28,14 @@ const Field = (props: FieldProps) => {
     } else {                                  // Component updated
       let debouncetimer = setTimeout(() => {  // Initiate debounce timer
         let now = new Date().toJSON();
-        console.log("Updating CMS: "+now);
         props.sdk.space.getEntry(props.sdk.entry.getSys().id)
         .then((entryRef: any) => {
           entryRef.fields.Body.en = turndownService.turndown(value);
-          props.sdk.space.updateEntry(entryRef);
+          if (!mdLoad) {
+            props.sdk.space.updateEntry(entryRef);
+            console.log("Updating CMS: "+now);
+          }
+          mdLoad=false;
         })
       }, 750)                                 // Return timer and only fire after 750ms
       return () => {                          // Reset timeout for each state change
