@@ -35,14 +35,25 @@ const Field = (props: FieldProps) => {
     if (value==='') {                         // Initial load of CMS - update quill
       props.sdk.space.getEntry(props.sdk.entry.getSys().id)
       .then((entryRef: any) => {
-        setValue(converter.makeHtml(entryRef.fields.Body.en));
+        if (typeof(entryRef.fields.Body)!='undefined') {
+          setValue(converter.makeHtml(entryRef.fields.Body.en));
+        } else {
+          entryRef.fields.Body = {};
+          entryRef.fields.Body.en = '';
+          setValue(converter.makeHtml(entryRef.fields.Body.en));
+        }
       });
     } else {                                  // Component updated
       let debouncetimer = setTimeout(() => {  // Initiate debounce timer
         let now = new Date().toJSON();
         props.sdk.space.getEntry(props.sdk.entry.getSys().id)
         .then((entryRef: any) => {
-          entryRef.fields.Body.en = turndownService.turndown(value);
+          if (typeof(entryRef.fields.Body)!='undefined') {
+            entryRef.fields.Body.en = turndownService.turndown(value);
+          } else {
+            entryRef.fields.Body = {};
+            entryRef.fields.Body.en = turndownService.turndown(value);
+          }
           if (!mdLoad) {
             props.sdk.space.updateEntry(entryRef);
             console.log("Updating CMS: "+now);
@@ -77,10 +88,12 @@ const Field = (props: FieldProps) => {
           let valueHTML=value;
           props.sdk.dialogs.selectMultipleAssets()
           .then( (promiseData: any) => {
-            promiseData.forEach((result: any) => {
-              valueHTML+="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">";
-            });
-            setValue(valueHTML);
+            if (typeof(promiseData) != 'undefined') {
+              promiseData.forEach((result: any) => {
+                valueHTML+="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">";
+              });
+              setValue(valueHTML);
+            }
           });
         }
       }
