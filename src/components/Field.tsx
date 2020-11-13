@@ -69,7 +69,7 @@ const Field = (props: FieldProps) => {
         clearTimeout(debouncetimer);
       }
     }
-  }, [])
+  })
 
   props.sdk.window.startAutoResizer();
 
