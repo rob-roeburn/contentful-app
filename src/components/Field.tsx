@@ -6,9 +6,11 @@ import Showdown from 'showdown';
 import TurndownService from 'turndown';
 import 'react-quill/dist/quill.snow.css';
 
+const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image', 'undo', 'redo'];
 
-
-const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image'];
+let icons = ReactQuill.Quill.import("ui/icons");
+icons["undo"] = `<svg viewbox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path></svg>`;
+icons["redo"] = `<svg viewbox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path></svg>`;
 
 Showdown.extension("noLineBreakLists", function() {
   return [
@@ -27,6 +29,8 @@ const turndownService = new TurndownService();
 let mdLoad = true;
 
 interface FieldProps { sdk: FieldExtensionSDK; }
+
+let mainRef = React.createRef<ReactQuill>();
 
 const Field = (props: FieldProps) => {
   const [value, setValue] = useState('');
@@ -65,7 +69,7 @@ const Field = (props: FieldProps) => {
         clearTimeout(debouncetimer);
       }
     }
-  })
+  }, [])
 
   props.sdk.window.startAutoResizer();
 
@@ -81,7 +85,9 @@ const Field = (props: FieldProps) => {
           {'list': 'bullet'}
         ],
         ['link'],
-        ['image']
+        ['image'],
+        ['undo'],
+        ['redo']
       ],
       handlers: {
         'image': function () {
@@ -95,14 +101,27 @@ const Field = (props: FieldProps) => {
               setValue(valueHTML);
             }
           });
+        },
+        'undo': function () {
+          console.log("clicked Undo")
+          console.log(mainRef.current)
+        },
+        'redo': function () {
+          console.log("clicked Redo")
+          console.log(mainRef.current)
         }
       }
+    },
+    history: {
+      delay: 200,
+      maxStack: 500,
+      userOnly: true
     }
   };
 
   return <div>
       <Paragraph>
-        <ReactQuill id='quillmain' modules={modules} formats={formats} theme="snow" value={value} onChange={setValue}/>
+        <ReactQuill id='quillmain' modules={modules} formats={formats} theme="snow" value={value} onChange={setValue} ref={mainRef}/>
       </Paragraph>
     </div>
   ;
