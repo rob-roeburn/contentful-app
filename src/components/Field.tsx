@@ -35,6 +35,19 @@ let mainRef = React.createRef<ReactQuill>();
 const Field = (props: FieldProps) => {
   const [value, setValue] = useState('');
 
+  function imageFunc() {
+  }
+
+  function undoFunc() {
+    console.log("clicked Undo")
+    console.log(mainRef.current)
+  }
+
+  function redoFunc() {
+    console.log("clicked Redo")
+    console.log(mainRef.current)
+  }
+
   useEffect (()=> {                           // useEffect for debounce hook
     if (value==='') {                         // Initial load of CMS - update quill
       props.sdk.space.getEntry(props.sdk.entry.getSys().id)
@@ -90,26 +103,9 @@ const Field = (props: FieldProps) => {
         ['redo']
       ],
       handlers: {
-        'image': function () {
-          let valueHTML=value;
-          props.sdk.dialogs.selectMultipleAssets()
-          .then( (promiseData: any) => {
-            if (typeof(promiseData) != 'undefined') {
-              promiseData.forEach((result: any) => {
-                valueHTML+="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">";
-              });
-              setValue(valueHTML);
-            }
-          });
-        },
-        'undo': function () {
-          console.log("clicked Undo")
-          console.log(mainRef.current)
-        },
-        'redo': function () {
-          console.log("clicked Redo")
-          console.log(mainRef.current)
-        }
+        'image': imageFunc(),
+        'undo': undoFunc(),
+        'redo': redoFunc()
       }
     },
     history: {
