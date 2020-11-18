@@ -6,11 +6,7 @@ import Showdown from 'showdown';
 import TurndownService from 'turndown';
 import 'react-quill/dist/quill.snow.css';
 
-const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image', 'undo', 'redo'];
-
-let icons = ReactQuill.Quill.import("ui/icons");
-icons["undo"] = `<svg viewbox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path></svg>`;
-icons["redo"] = `<svg viewbox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path></svg>`;
+const formats = ['header','bold', 'italic', 'underline', 'strike', 'blockquote','list', 'bullet', 'indent','link', 'image'];
 
 Showdown.extension("noLineBreakLists", function() {
   return [
@@ -35,19 +31,6 @@ let mainRef = React.createRef<ReactQuill>();
 const Field = (props: FieldProps) => {
   const [value, setValue] = useState('');
 
-  function imageFunc() {
-  }
-
-  function undoFunc() {
-    console.log("clicked Undo")
-    console.log(mainRef.current)
-  }
-
-  function redoFunc() {
-    console.log("clicked Redo")
-    console.log(mainRef.current)
-  }
-
   useEffect (()=> {                           // useEffect for debounce hook
     if (value==='') {                         // Initial load of CMS - update quill
       props.sdk.space.getEntry(props.sdk.entry.getSys().id)
@@ -60,6 +43,7 @@ const Field = (props: FieldProps) => {
           setValue(converter.makeHtml(entryRef.fields.Body.en));
         }
       });
+      mdLoad=false;
     } else {                                  // Component updated
       let debouncetimer = setTimeout(() => {  // Initiate debounce timer
         let now = new Date().toJSON();
@@ -98,14 +82,21 @@ const Field = (props: FieldProps) => {
           {'list': 'bullet'}
         ],
         ['link'],
-        ['image'],
-        ['undo'],
-        ['redo']
+        ['image']
       ],
       handlers: {
-        'image': imageFunc(),
-        'undo': undoFunc(),
-        'redo': redoFunc()
+        'image': React.useCallback(imageFunc => {
+          let valueRef=String(mainRef.current!.value);
+          props.sdk.dialogs.selectMultipleAssets()
+          .then( (promiseData: any) => {
+            if (typeof(promiseData) != 'undefined') {
+              promiseData.forEach((result: any) => {
+                valueRef+="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">";
+              });
+              setValue(valueRef);
+            }
+          });
+        }, [])
       }
     },
     history: {
