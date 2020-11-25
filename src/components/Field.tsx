@@ -43,7 +43,6 @@ const Field = (props: FieldProps) => {
           setValue(converter.makeHtml(entryRef.fields.Body.en));
         }
       });
-      mdLoad=false;
     } else {                                  // Component updated
       let debouncetimer = setTimeout(() => {  // Initiate debounce timer
         let now = new Date().toJSON();
