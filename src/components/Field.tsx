@@ -52,13 +52,32 @@ const Field = (props: FieldProps) => {
         let now = new Date().toJSON();
         props.sdk.space.getEntry(props.sdk.entry.getSys().id)
         .then((entryRef: any) => {
-          if (typeof(entryRef.fields.Body)!='undefined') {
-            entryRef.fields.Body.en = turndownService.turndown(value);
+          if(value==="<p><br></p>") {
+            // Intercept write of breakspaces
+            if (typeof(entryRef.fields.Body)!='undefined') {
+              entryRef.fields.Body.en = turndownService.turndown("<p><br>&nbsp;<br>&nbsp;<br></p>");
+            } else {
+              entryRef.fields.Body = {};
+              entryRef.fields.Body.en = turndownService.turndown("<p><br>&nbsp;<br>&nbsp;<br></p>");
+            }
           } else {
-            entryRef.fields.Body = {};
-            entryRef.fields.Body.en = turndownService.turndown(value);
+            if (typeof(entryRef.fields.Body)!='undefined') {
+              entryRef.fields.Body.en = turndownService.turndown(value);
+            } else {
+              entryRef.fields.Body = {};
+              entryRef.fields.Body.en = turndownService.turndown(value);
+            }
           }
           if (!mdLoad) {
+            // Intercept write of empty string to avoid versioning issue
+            if (JSON.stringify(entryRef.fields.Body)==='{"en":""}') {
+              entryRef.fields.Body.en = " ";
+            }
+            let entrySys=props.sdk.entry.getSys()
+            let entryPublished=false
+            if (entrySys.version<(entrySys.publishedVersion+2)) {
+              entryPublished=true
+            }
             props.sdk.space.updateEntry(entryRef);
             console.log("Updating CMS: "+now);
           }
