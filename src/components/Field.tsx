@@ -110,14 +110,34 @@ const Field = (props: FieldProps) => {
       ],
       handlers: {
         'image': React.useCallback(imageFunc => {
-          let valueRef=String(mainRef.current!.value);
           props.sdk.dialogs.selectMultipleAssets()
           .then( (promiseData: any) => {
             if (typeof(promiseData) != 'undefined') {
-              promiseData.forEach((result: any) => {
-                valueRef+="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">";
-              });
-              setValue(valueRef);
+              let myEditor: any = mainRef!.current!.getEditor();
+              let valueRef=String(mainRef.current!.value);
+              let parser = new DOMParser();
+              let valueDoc = parser.parseFromString(valueRef, "text/html");
+              let items = valueDoc.body.getElementsByTagName("p");
+              let insertPosition = 0;
+              let targetArr = Array.from(items);
+              for (let i = 0, len = items.length; i < len; i++) {
+                let content: any = items[i].textContent;
+                insertPosition += content.length;
+                if (insertPosition > myEditor.getSelection().index) {
+                  promiseData.forEach((result: any) => {
+                    let addition="<img alt=\""+result.fields.file.en.fileName.split('.')[0]+"\" src=\""+result.fields.file.en.url+"\">"
+                    let addDiv = document.createElement('p');
+                    addDiv.innerHTML = addition.trim();
+                    targetArr.splice(i, 0, addDiv);
+                  });
+                  break
+                }
+              }
+              let finalRef = "";
+              for (let i = 0, len = targetArr.length; i < len; i++) {
+                finalRef += targetArr[i].outerHTML
+              }
+              setValue(finalRef);
             }
           });
         }, []),
