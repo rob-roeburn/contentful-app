@@ -110,10 +110,10 @@ const Field = (props: FieldProps) => {
       ],
       handlers: {
         'image': React.useCallback(imageFunc => {
-          console.log("rich-editor-dev env");
           props.sdk.dialogs.selectMultipleAssets()
           .then( (promiseData: any) => {
             if (typeof(promiseData) != 'undefined') {
+              console.log("rich-editor-dev env");
               let myEditor: any = mainRef!.current!.getEditor();
               let valueRef=String(mainRef.current!.value);
               let parser = new DOMParser();
