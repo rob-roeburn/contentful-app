@@ -110,6 +110,7 @@ const Field = (props: FieldProps) => {
       ],
       handlers: {
         'image': React.useCallback(imageFunc => {
+          console.log("rich-editor-dev");
           props.sdk.dialogs.selectMultipleAssets()
           .then( (promiseData: any) => {
             if (typeof(promiseData) != 'undefined') {
