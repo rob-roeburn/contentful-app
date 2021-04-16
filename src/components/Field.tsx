@@ -99,7 +99,7 @@ const Field = (props: FieldProps) => {
           }
           mdLoad=false;
         })
-      }, 750)                                 // Return timer and only fire after 750ms
+      }, 75)                                  // Return timer and only fire after 75ms
       return () => {                          // Reset timeout for each state change
         clearTimeout(debouncetimer);
       }
