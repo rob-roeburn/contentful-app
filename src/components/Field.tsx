@@ -94,12 +94,12 @@ const Field = (props: FieldProps) => {
             if (entrySys.version<(entrySys.publishedVersion+2)) {
               entryPublished=true
             }
-            props.sdk.space.updateEntry(entryRef);
+            props.sdk.field.setValue(entryRef.fields.Body.en);
             console.log("Updating CMS: "+now);
           }
           mdLoad=false;
         })
-      }, 75)                                  // Return timer and only fire after 75ms
+      }, 750)                                 // Return timer and only fire after 750ms
       return () => {                          // Reset timeout for each state change
         clearTimeout(debouncetimer);
       }
