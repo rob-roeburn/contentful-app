@@ -38,8 +38,19 @@ Showdown.extension("noLineBreakLists", function() {
   ]
 });
 
+Showdown.extension("paraBlockAd", function() {
+  return [
+    {
+        type    : 'html',
+        regex   : '<p class=\"inline ad\"><\/p>',
+        replace : '<p>%ADPLACEHOLDER%</p>'
+    }
+  ]
+});
+
 const converter = new Showdown.Converter();
 converter.useExtension("noLineBreakLists");
+converter.useExtension("paraBlockAd");
 converter.setOption('simpleLineBreaks', true);
 const turndownService = new TurndownService();
 let mdLoad = true;
@@ -77,11 +88,13 @@ const Field = (props: FieldProps) => {
               entryRef.fields.Body.en = turndownService.turndown("<p><br>&nbsp;<br>&nbsp;<br></p>");
             }
           } else {
+            let newEntry = turndownService.turndown(value)
+            newEntry = newEntry.replace('%ADPLACEHOLDER%', '<p class="inline ad"></p>');
             if (typeof(entryRef.fields.Body)!='undefined') {
-              entryRef.fields.Body.en = turndownService.turndown(value);
+              entryRef.fields.Body.en = newEntry;
             } else {
               entryRef.fields.Body = {};
-              entryRef.fields.Body.en = turndownService.turndown(value);
+              entryRef.fields.Body.en = newEntry;
             }
           }
           if (!mdLoad) {
