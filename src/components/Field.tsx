@@ -43,7 +43,7 @@ Showdown.extension("paraBlockAd", function() {
     {
         type    : 'html',
         regex   : '<p class=\"inline ad\"><\/p>',
-        replace : '<p>%ADPLACEHOLDER%</p>'
+        replace : '<p><img src="https://images.ctfassets.net/srdmz6yont2x/2wXVLCDB2oTwQYqFhdwHWc/4038621ecfbebdf5da25de515d66a6a8/ad_placeholder.png?h=250" alt="Ad Placeholder"></p>'
     }
   ]
 });
@@ -89,7 +89,7 @@ const Field = (props: FieldProps) => {
             }
           } else {
             let newEntry = turndownService.turndown(value)
-            newEntry = newEntry.replace('%ADPLACEHOLDER%', '<p class="inline ad"></p>');
+            newEntry = newEntry.replace('![](https://images.ctfassets.net/srdmz6yont2x/2wXVLCDB2oTwQYqFhdwHWc/4038621ecfbebdf5da25de515d66a6a8/ad_placeholder.png?h=250)', '<p class="inline ad"></p>');
             if (typeof(entryRef.fields.Body)!='undefined') {
               entryRef.fields.Body.en = newEntry;
             } else {
