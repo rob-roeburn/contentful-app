@@ -132,6 +132,7 @@ const Field = (props: FieldProps) => {
           {'list': 'ordered'},
           {'list': 'bullet'}
         ],
+        ['blockquote'],
         ['link'],
         ['image'],
         ['undo'],
