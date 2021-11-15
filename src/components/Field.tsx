@@ -133,6 +133,7 @@ const Field = (props: FieldProps) => {
           {'list': 'bullet'}
         ],
         ['blockquote'],
+        ['code-block'],
         ['link'],
         ['image'],
         ['undo'],
