@@ -108,7 +108,7 @@ const Field = (props: FieldProps) => {
               entryPublished=true
             }
             props.sdk.field.setValue(entryRef.fields.Body.en);
-            console.log("Updating CMS: "+now);
+            console.log("Updating CMS from test rich editor : "+now);
           }
           mdLoad=false;
         })
